@@ -1,0 +1,36 @@
+{
+  "name": "chanomhub-sdk",
+  "version": "1.0.0",
+  "description": "ChanomHub SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./next": {
+      "types": "./dist/next.d.ts",
+      "default": "./dist/next.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "next": "^16.1.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0"
+  }
+}
