@@ -1,9 +1,16 @@
 {
-  "name": "chanomhub-sdk",
+  "name": "@chanomhub/sdk",
   "version": "1.0.0",
   "description": "ChanomHub SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chanomhub/chanomhub-sdk.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
