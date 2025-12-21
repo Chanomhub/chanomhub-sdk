@@ -6,11 +6,11 @@ Works with Next.js, React Native, Node.js, and browser environments.
 ## Installation
 
 ```bash
-npm install chanomhub-sdk
+npm install @chanomhub/sdk
 # or
-yarn add chanomhub-sdk
+yarn add @chanomhub/sdk
 # or
-pnpm add chanomhub-sdk
+pnpm add @chanomhub/sdk
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ pnpm add chanomhub-sdk
 ### Basic Usage
 
 ```typescript
-import { createChanomhubClient } from 'chanomhub-sdk';
+import { createChanomhubClient } from '@chanomhub/sdk';
 
 // Public access
 const sdk = createChanomhubClient();
