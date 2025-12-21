@@ -3,6 +3,13 @@
 A framework-agnostic TypeScript SDK for interacting with the Chanomhub API.
 Works with Next.js, React Native, Node.js, and browser environments.
 
+## Testing
+
+Run the test suite with:
+```bash
+npm test
+```
+
 ## Installation
 
 ```bash

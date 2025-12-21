@@ -37,6 +37,7 @@ export interface Download {
 
 /** Official download source */
 export interface OfficialDownloadSource {
+    id: string;
     name: string;
     url: string;
     status: string;
@@ -50,16 +51,18 @@ export interface Mod {
     downloadLink: string;
     version: string;
     status: string;
-    categories: Array<{ name: string }>;
-    images: Array<{ url: string }>;
+    categories: NamedEntity[];
+    images: ImageObject[];
 }
 
 /** Named entity (tag, category, platform, etc.) */
 export interface NamedEntity {
+    id: string; // Changed to string as ID is usually string in GraphQL
     name: string;
 }
 
 /** Image object */
 export interface ImageObject {
+    id?: string;
     url: string;
 }

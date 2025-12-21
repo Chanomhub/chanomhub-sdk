@@ -2,7 +2,7 @@
  * Chanomhub SDK - Article Types
  */
 
-import type { ArticleStatus, GameEngine } from '../config';
+import type { ArticleStatus } from '../config';
 import type { Author, Download, OfficialDownloadSource, Mod, NamedEntity, ImageObject } from './common';
 
 /** Full Article type */
@@ -20,7 +20,7 @@ export interface Article {
     createdAt: string;
     updatedAt: string;
     status: ArticleStatus;
-    engine: GameEngine;
+    engine: { id: string; name: string };
     mainImage: string | null;
     backgroundImage: string | null;
     coverImage: string | null;
@@ -29,9 +29,9 @@ export interface Article {
     favorited: boolean;
     favoritesCount: number;
     sequentialCode: string | null;
-    downloads: Download[];
+    downloads?: Download[];
     mods: Mod[];
-    officialDownloadSources: OfficialDownloadSource[];
+    officialDownloadSources?: OfficialDownloadSource[];
     version?: string;
 }
 
@@ -49,7 +49,7 @@ export interface ArticleListItem {
     favoritesCount: number;
     favorited?: boolean;
     status?: ArticleStatus;
-    engine?: GameEngine | { name: string };
+    engine?: { id: string; name: string };
     sequentialCode: string | null;
     author: {
         name: string;
