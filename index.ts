@@ -32,12 +32,13 @@
  */
 
 import { createGraphQLClient, createRestClient, type GraphQLFetcher } from './client';
-import { createArticleRepository, createFavoritesRepository, createUsersRepository, type ArticleRepository, type FavoritesRepository, type UsersRepository } from './repositories';
+import { createArticleRepository, createFavoritesRepository, createUsersRepository, createSearchRepository, type ArticleRepository, type FavoritesRepository, type UsersRepository, type SearchRepository } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
 // Re-export types
 export * from './types';
 export * from './config';
+export * from './errors';
 export { resolveImageUrl } from './transforms/imageUrl';
 
 /** Chanomhub SDK Client interface */
@@ -48,6 +49,8 @@ export interface ChanomhubClient {
     favorites: FavoritesRepository;
     /** User/Profile operations */
     users: UsersRepository;
+    /** Search operations */
+    search: SearchRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -87,11 +90,13 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const articles = createArticleRepository(graphql);
     const favorites = createFavoritesRepository(rest);
     const users = createUsersRepository(rest);
+    const search = createSearchRepository(graphql);
 
     return {
         articles,
         favorites,
         users,
+        search,
         graphql,
         config: fullConfig,
     };

@@ -185,7 +185,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
     if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
 
     const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
-    const countFilterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }` : '';
+    const countFilterArg = filterParts.length > 0 ? `(filter: { ${filterParts.join(', ')} })` : '';
     const fieldsQuery = buildFieldsQuery({ preset, fields });
 
     // Query articles and count in a single request
@@ -193,7 +193,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
       articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
         ${fieldsQuery}
       }
-      articlesCount(${countFilterArg})
+      articlesCount${countFilterArg}
     }`;
 
     const { data, errors } = await fetcher<{ articles: ArticleListItem[]; articlesCount: number }>(query, {}, {

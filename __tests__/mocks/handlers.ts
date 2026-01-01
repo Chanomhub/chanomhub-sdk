@@ -1,5 +1,7 @@
 import { http, graphql, HttpResponse } from 'msw';
 
+const BASE_URL = 'https://api.chanomhub.com';
+
 export const handlers = [
     // Happy path: Get Articles
     graphql.query('GetArticles', () => {
@@ -35,6 +37,56 @@ export const handlers = [
                         images: []
                     },
                 ],
+            },
+        });
+    }),
+
+    // Paginated Articles
+    graphql.query('GetArticlesPaginated', () => {
+        return HttpResponse.json({
+            data: {
+                articles: [
+                    { id: 1, title: 'Article 1', slug: 'article-1', mainImage: 'img1.jpg', author: { name: 'A1', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] },
+                    { id: 2, title: 'Article 2', slug: 'article-2', mainImage: 'img2.jpg', author: { name: 'A2', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] },
+                ],
+                articlesCount: 100,
+            },
+        });
+    }),
+
+    // Search Articles
+    graphql.query('SearchArticles', () => {
+        return HttpResponse.json({
+            data: {
+                articles: [
+                    { id: 1, title: 'Found Article', slug: 'found-article', mainImage: 'found.jpg', author: { name: 'Author', image: null }, tags: [], engine: { id: 'e1', name: 'RenPy' } },
+                ],
+                articlesCount: 1,
+            },
+        });
+    }),
+
+    // Articles by Tag/Platform/Category
+    graphql.query('GetArticlesByTag', () => {
+        return HttpResponse.json({
+            data: {
+                articles: [{ id: 1, title: 'Tagged Article', slug: 'tagged', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
+            },
+        });
+    }),
+
+    graphql.query('GetArticlesByPlatform', () => {
+        return HttpResponse.json({
+            data: {
+                articles: [{ id: 1, title: 'Platform Article', slug: 'platform', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
+            },
+        });
+    }),
+
+    graphql.query('GetArticlesByCategory', () => {
+        return HttpResponse.json({
+            data: {
+                articles: [{ id: 1, title: 'Category Article', slug: 'category', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
             },
         });
     }),
@@ -90,6 +142,43 @@ export const handlers = [
         });
     }),
 
+    // Get Article with Downloads
+    graphql.query('GetArticleWithDownloads', () => {
+        return HttpResponse.json({
+            data: {
+                article: {
+                    id: 1,
+                    title: 'Article With Downloads',
+                    slug: 'with-downloads',
+                    description: 'Desc',
+                    body: 'Body',
+                    ver: '1.0',
+                    createdAt: '2023-01-01',
+                    updatedAt: '2023-01-01',
+                    status: 'PUBLISHED',
+                    engine: { id: 'e1', name: 'RenPy' },
+                    mainImage: 'main.jpg',
+                    backgroundImage: null,
+                    coverImage: null,
+                    favorited: false,
+                    favoritesCount: 5,
+                    sequentialCode: '001',
+                    author: { name: 'Author', bio: null, image: null, backgroundImage: null, following: false, socialMediaLinks: [] },
+                    images: [],
+                    creators: [],
+                    tags: [],
+                    platforms: [],
+                    categories: [],
+                    mods: [],
+                },
+                downloads: [
+                    { id: 1, name: 'Download 1', url: 'https://dl.com/1', isActive: true, vipOnly: false },
+                ],
+                officialDownloadSources: [],
+            },
+        });
+    }),
+
     // Error path: Internal Server Error simulation
     graphql.query('ServerErrorQuery', () => {
         return new HttpResponse(null, { status: 500 });
@@ -103,4 +192,64 @@ export const handlers = [
             ]
         });
     }),
+
+    // ===================== REST API Handlers =====================
+
+    // Favorites - Add
+    http.post(`${BASE_URL}/api/articles/:slug/favorite`, ({ params }) => {
+        const { slug } = params;
+        if (slug === 'unauthorized') {
+            return new HttpResponse(null, { status: 401 });
+        }
+        return HttpResponse.json({
+            article: { id: 1, slug, title: 'Favorited Article', favorited: true, favoritesCount: 11 }
+        });
+    }),
+
+    // Favorites - Remove
+    http.delete(`${BASE_URL}/api/articles/:slug/favorite`, ({ params }) => {
+        const { slug } = params;
+        return HttpResponse.json({
+            article: { id: 1, slug, title: 'Unfavorited Article', favorited: false, favoritesCount: 10 }
+        });
+    }),
+
+    // Users - Get Current User
+    http.get(`${BASE_URL}/api/user`, ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        return HttpResponse.json({
+            user: { id: 1, email: 'test@example.com', username: 'testuser', bio: 'Hello', image: 'avatar.jpg' }
+        });
+    }),
+
+    // Profiles - Get Profile
+    http.get(`${BASE_URL}/api/profiles/:username`, ({ params }) => {
+        const { username } = params;
+        if (username === 'notfound') {
+            return new HttpResponse(null, { status: 404 });
+        }
+        return HttpResponse.json({
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false }
+        });
+    }),
+
+    // Profiles - Follow
+    http.post(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
+        const { username } = params;
+        return HttpResponse.json({
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: true }
+        });
+    }),
+
+    // Profiles - Unfollow
+    http.delete(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
+        const { username } = params;
+        return HttpResponse.json({
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false }
+        });
+    }),
 ];
+
