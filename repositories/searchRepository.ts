@@ -72,7 +72,7 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
 
         // Build filter parts
         const filterParts: string[] = [];
-        filterParts.push(`search: "${query.replace(/"/g, '\\"')}"`);
+        filterParts.push(`q: "${query.replace(/"/g, '\\"')}"`);
         if (tag) filterParts.push(`tag: "${tag}"`);
         if (platform) filterParts.push(`platform: "${platform}"`);
         if (category) filterParts.push(`category: "${category}"`);
