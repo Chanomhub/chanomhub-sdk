@@ -4,6 +4,7 @@
 
 import type { GraphQLFetcher, FetchOptions } from '../client';
 import type { Article, ArticleListItem, ArticleListOptions, ArticleWithDownloads, ArticlePreset, ArticleField } from '../types/article';
+import type { PaginatedResponse } from '../types/common';
 import type { ArticleStatus } from '../config';
 
 // ============================================================================
@@ -113,8 +114,11 @@ function buildFieldsQuery(options: { preset?: ArticlePreset; fields?: ArticleFie
 }
 
 export interface ArticleRepository {
-  /** Get paginated list of articles */
+  /** Get list of articles */
   getAll(options?: ArticleListOptions): Promise<ArticleListItem[]>;
+
+  /** Get paginated list of articles with total count */
+  getAllPaginated(options?: ArticleListOptions): Promise<PaginatedResponse<ArticleListItem>>;
 
   /** Get articles by tag */
   getByTag(tag: string, options?: { limit?: number }): Promise<ArticleListItem[]>;
@@ -167,6 +171,48 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
     }
 
     return data.articles || [];
+  }
+
+  async function getAllPaginated(options: ArticleListOptions = {}): Promise<PaginatedResponse<ArticleListItem>> {
+    const { limit = 12, offset = 0, status = 'PUBLISHED', filter = {}, preset, fields } = options;
+
+    // Build filter string
+    const filterParts: string[] = [];
+    if (filter.tag) filterParts.push(`tag: "${filter.tag}"`);
+    if (filter.platform) filterParts.push(`platform: "${filter.platform}"`);
+    if (filter.category) filterParts.push(`category: "${filter.category}"`);
+    if (filter.author) filterParts.push(`author: "${filter.author}"`);
+    if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
+
+    const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
+    const countFilterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }` : '';
+    const fieldsQuery = buildFieldsQuery({ preset, fields });
+
+    // Query articles and count in a single request
+    const query = `query GetArticlesPaginated {
+      articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
+        ${fieldsQuery}
+      }
+      articlesCount(${countFilterArg})
+    }`;
+
+    const { data, errors } = await fetcher<{ articles: ArticleListItem[]; articlesCount: number }>(query, {}, {
+      operationName: 'GetArticlesPaginated',
+    });
+
+    if (errors || !data) {
+      console.error('Failed to fetch paginated articles:', errors);
+      return { items: [], total: 0, page: 1, pageSize: limit };
+    }
+
+    const page = Math.floor(offset / limit) + 1;
+
+    return {
+      items: data.articles || [],
+      total: data.articlesCount || 0,
+      page,
+      pageSize: limit,
+    };
   }
 
   async function getByTag(tag: string, options: { limit?: number } = {}): Promise<ArticleListItem[]> {
@@ -306,6 +352,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
 
   return {
     getAll,
+    getAllPaginated,
     getByTag,
     getByPlatform,
     getByCategory,

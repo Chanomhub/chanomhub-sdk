@@ -94,3 +94,81 @@ export function createGraphQLClient(config: ChanomhubConfig) {
 }
 
 export type GraphQLFetcher = ReturnType<typeof createGraphQLClient>;
+
+/**
+ * REST API response type
+ */
+export interface RestResponse<T> {
+    data: T | null;
+    error?: string;
+}
+
+/**
+ * Creates a REST API client for non-GraphQL endpoints
+ * 
+ * @param config - SDK configuration
+ * @returns REST fetch function
+ */
+export function createRestClient(config: ChanomhubConfig) {
+    return async function restFetch<T>(
+        endpoint: string,
+        options: {
+            method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+            body?: Record<string, unknown>;
+        } = {}
+    ): Promise<RestResponse<T>> {
+        const { method = 'GET', body } = options;
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        };
+
+        if (config.token) {
+            headers['Authorization'] = `Bearer ${config.token}`;
+        }
+
+        const fetchOptions: RequestInit = {
+            method,
+            headers,
+            cache: 'no-store', // REST calls are typically mutations, no caching
+        };
+
+        if (body) {
+            fetchOptions.body = JSON.stringify(body);
+        }
+
+        try {
+            const res = await fetch(`${config.apiUrl}${endpoint}`, fetchOptions);
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('REST fetch error:', res.status, errorText);
+                return {
+                    data: null,
+                    error: `HTTP ${res.status}: ${res.statusText}`,
+                };
+            }
+
+            // Some endpoints may return empty body (204)
+            if (res.status === 204) {
+                return { data: null };
+            }
+
+            const json = await res.json();
+
+            // Transform image URLs if present
+            const transformedData = transformImageUrlsDeep(json, config.cdnUrl) as T;
+
+            return { data: transformedData };
+        } catch (error) {
+            console.error('REST fetch exception:', error);
+            return {
+                data: null,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            };
+        }
+    };
+}
+
+export type RestFetcher = ReturnType<typeof createRestClient>;

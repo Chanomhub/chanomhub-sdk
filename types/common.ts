@@ -8,6 +8,14 @@ export interface ListOptions {
     offset?: number;
 }
 
+/** Paginated response wrapper */
+export interface PaginatedResponse<T> {
+    items: T[];
+    total: number;
+    page: number;
+    pageSize: number;
+}
+
 /** GraphQL response wrapper */
 export interface GraphQLResponse<T> {
     data: T | null;
