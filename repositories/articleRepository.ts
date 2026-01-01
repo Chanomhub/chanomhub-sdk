@@ -26,7 +26,7 @@ const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
     'id', 'title', 'slug', 'description', 'body', 'ver',
     'mainImage', 'coverImage', 'backgroundImage',
     'author', 'tags', 'platforms', 'categories', 'creators', 'engine',
-    'images', 'mods',
+    'images',
     'favoritesCount', 'favorited',
     'createdAt', 'updatedAt', 'status', 'sequentialCode'
   ],
@@ -56,15 +56,9 @@ const FIELD_MAPPINGS: Record<ArticleField, string> = {
     name
   }`,
   author: `author {
+    id
     name
-    bio
     image
-    backgroundImage
-    following
-    socialMediaLinks {
-      platform
-      url
-    }
   }`,
   creators: `creators {
     id
@@ -258,7 +252,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
   }
 
   async function getWithDownloads(slug: string, language?: string): Promise<ArticleWithDownloads> {
-    const query = `query GetArticleWithDownloads($slug: String!, $language: String, $downloadsArticleId: Int) {
+    const query = `query GetArticleWithDownloads($slug: String!, $language: String, $downloadsArticleId: Int!) {
       article(slug: $slug, language: $language) {
         ${buildFieldsQuery({ preset: 'full' })}
       }
@@ -268,7 +262,6 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
         url
         isActive
         vipOnly
-        createdAt
       }
       officialDownloadSources(articleId: $downloadsArticleId) {
         id
@@ -290,7 +283,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
       officialDownloadSources: Article['officialDownloadSources'];
     }>(
       query,
-      { slug, language, downloadsArticleId: articleResult.id },
+      { slug, language, downloadsArticleId: Number(articleResult.id) },
       { operationName: 'GetArticleWithDownloads' }
     );
 

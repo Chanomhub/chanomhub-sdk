@@ -14,7 +14,7 @@ export interface ChanomhubConfig {
 }
 
 export const DEFAULT_CONFIG: ChanomhubConfig = {
-    apiUrl: 'https://api.chanomhub.online',
+    apiUrl: 'https://api.chanomhub.com',
     cdnUrl: 'https://cdn.chanomhub.com',
     defaultCacheSeconds: 3600,
 };
