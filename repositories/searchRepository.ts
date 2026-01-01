@@ -14,6 +14,12 @@ export interface SearchOptions {
     platform?: string;
     /** Filter by category */
     category?: string;
+    /** Filter by engine */
+    engine?: string;
+    /** Filter by sequential code */
+    sequentialCode?: string;
+    /** Filter by author name */
+    author?: string;
     /** Results per page */
     limit?: number;
     /** Page offset */
@@ -62,7 +68,7 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         query: string,
         options: SearchOptions = {},
     ): Promise<PaginatedResponse<ArticleListItem>> {
-        const { limit = 12, offset = 0, tag, platform, category } = options;
+        const { limit = 12, offset = 0, tag, platform, category, engine, sequentialCode, author } = options;
 
         // Build filter parts
         const filterParts: string[] = [];
@@ -70,6 +76,9 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         if (tag) filterParts.push(`tag: "${tag}"`);
         if (platform) filterParts.push(`platform: "${platform}"`);
         if (category) filterParts.push(`category: "${category}"`);
+        if (engine) filterParts.push(`engine: "${engine}"`);
+        if (sequentialCode) filterParts.push(`sequentialCode: "${sequentialCode}"`);
+        if (author) filterParts.push(`author: "${author}"`);
 
         const filterArg = `filter: { ${filterParts.join(', ')} }`;
 
