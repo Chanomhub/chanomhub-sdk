@@ -58,8 +58,10 @@ const SEARCH_FIELDS = `
  * Creates a search repository with the given GraphQL client
  */
 export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepository {
-
-    async function articles(query: string, options: SearchOptions = {}): Promise<PaginatedResponse<ArticleListItem>> {
+    async function articles(
+        query: string,
+        options: SearchOptions = {},
+    ): Promise<PaginatedResponse<ArticleListItem>> {
         const { limit = 12, offset = 0, tag, platform, category } = options;
 
         // Build filter parts
@@ -78,11 +80,10 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
             articlesCount(${filterArg})
         }`;
 
-        const { data, errors } = await fetcher<{ articles: ArticleListItem[]; articlesCount: number }>(
-            graphqlQuery,
-            {},
-            { operationName: 'SearchArticles' }
-        );
+        const { data, errors } = await fetcher<{
+            articles: ArticleListItem[];
+            articlesCount: number;
+        }>(graphqlQuery, {}, { operationName: 'SearchArticles' });
 
         if (errors || !data) {
             console.error('Failed to search articles:', errors);

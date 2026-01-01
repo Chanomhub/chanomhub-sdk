@@ -20,7 +20,7 @@ export const handlers = [
                         tags: [],
                         platforms: [],
                         categories: [],
-                        images: []
+                        images: [],
                     },
                     {
                         id: 2,
@@ -34,7 +34,7 @@ export const handlers = [
                         tags: [],
                         platforms: [],
                         categories: [],
-                        images: []
+                        images: [],
                     },
                 ],
             },
@@ -46,8 +46,30 @@ export const handlers = [
         return HttpResponse.json({
             data: {
                 articles: [
-                    { id: 1, title: 'Article 1', slug: 'article-1', mainImage: 'img1.jpg', author: { name: 'A1', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] },
-                    { id: 2, title: 'Article 2', slug: 'article-2', mainImage: 'img2.jpg', author: { name: 'A2', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] },
+                    {
+                        id: 1,
+                        title: 'Article 1',
+                        slug: 'article-1',
+                        mainImage: 'img1.jpg',
+                        author: { name: 'A1', image: null },
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        creators: [],
+                        images: [],
+                    },
+                    {
+                        id: 2,
+                        title: 'Article 2',
+                        slug: 'article-2',
+                        mainImage: 'img2.jpg',
+                        author: { name: 'A2', image: null },
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        creators: [],
+                        images: [],
+                    },
                 ],
                 articlesCount: 100,
             },
@@ -59,7 +81,15 @@ export const handlers = [
         return HttpResponse.json({
             data: {
                 articles: [
-                    { id: 1, title: 'Found Article', slug: 'found-article', mainImage: 'found.jpg', author: { name: 'Author', image: null }, tags: [], engine: { id: 'e1', name: 'RenPy' } },
+                    {
+                        id: 1,
+                        title: 'Found Article',
+                        slug: 'found-article',
+                        mainImage: 'found.jpg',
+                        author: { name: 'Author', image: null },
+                        tags: [],
+                        engine: { id: 'e1', name: 'RenPy' },
+                    },
                 ],
                 articlesCount: 1,
             },
@@ -70,7 +100,20 @@ export const handlers = [
     graphql.query('GetArticlesByTag', () => {
         return HttpResponse.json({
             data: {
-                articles: [{ id: 1, title: 'Tagged Article', slug: 'tagged', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
+                articles: [
+                    {
+                        id: 1,
+                        title: 'Tagged Article',
+                        slug: 'tagged',
+                        mainImage: null,
+                        author: { name: 'A', image: null },
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        creators: [],
+                        images: [],
+                    },
+                ],
             },
         });
     }),
@@ -78,7 +121,20 @@ export const handlers = [
     graphql.query('GetArticlesByPlatform', () => {
         return HttpResponse.json({
             data: {
-                articles: [{ id: 1, title: 'Platform Article', slug: 'platform', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
+                articles: [
+                    {
+                        id: 1,
+                        title: 'Platform Article',
+                        slug: 'platform',
+                        mainImage: null,
+                        author: { name: 'A', image: null },
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        creators: [],
+                        images: [],
+                    },
+                ],
             },
         });
     }),
@@ -86,7 +142,20 @@ export const handlers = [
     graphql.query('GetArticlesByCategory', () => {
         return HttpResponse.json({
             data: {
-                articles: [{ id: 1, title: 'Category Article', slug: 'category', mainImage: null, author: { name: 'A', image: null }, tags: [], platforms: [], categories: [], creators: [], images: [] }],
+                articles: [
+                    {
+                        id: 1,
+                        title: 'Category Article',
+                        slug: 'category',
+                        mainImage: null,
+                        author: { name: 'A', image: null },
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        creators: [],
+                        images: [],
+                    },
+                ],
             },
         });
     }),
@@ -126,11 +195,11 @@ export const handlers = [
                         image: 'john.jpg',
                         backgroundImage: 'auth_bg.jpg',
                         following: false,
-                        socialMediaLinks: []
+                        socialMediaLinks: [],
                     },
                     images: [
                         { id: 'img1', url: 'img1.jpg' },
-                        { id: 'img2', url: 'img2.jpg' }
+                        { id: 'img2', url: 'img2.jpg' },
                     ],
                     creators: [],
                     tags: [],
@@ -163,7 +232,14 @@ export const handlers = [
                     favorited: false,
                     favoritesCount: 5,
                     sequentialCode: '001',
-                    author: { name: 'Author', bio: null, image: null, backgroundImage: null, following: false, socialMediaLinks: [] },
+                    author: {
+                        name: 'Author',
+                        bio: null,
+                        image: null,
+                        backgroundImage: null,
+                        following: false,
+                        socialMediaLinks: [],
+                    },
                     images: [],
                     creators: [],
                     tags: [],
@@ -172,7 +248,13 @@ export const handlers = [
                     mods: [],
                 },
                 downloads: [
-                    { id: 1, name: 'Download 1', url: 'https://dl.com/1', isActive: true, vipOnly: false },
+                    {
+                        id: 1,
+                        name: 'Download 1',
+                        url: 'https://dl.com/1',
+                        isActive: true,
+                        vipOnly: false,
+                    },
                 ],
                 officialDownloadSources: [],
             },
@@ -187,9 +269,7 @@ export const handlers = [
     // Error path: GraphQL Error simulation
     graphql.query('GraphQLErrorQuery', () => {
         return HttpResponse.json({
-            errors: [
-                { message: 'Something went wrong in GraphQL' }
-            ]
+            errors: [{ message: 'Something went wrong in GraphQL' }],
         });
     }),
 
@@ -202,7 +282,13 @@ export const handlers = [
             return new HttpResponse(null, { status: 401 });
         }
         return HttpResponse.json({
-            article: { id: 1, slug, title: 'Favorited Article', favorited: true, favoritesCount: 11 }
+            article: {
+                id: 1,
+                slug,
+                title: 'Favorited Article',
+                favorited: true,
+                favoritesCount: 11,
+            },
         });
     }),
 
@@ -210,7 +296,13 @@ export const handlers = [
     http.delete(`${BASE_URL}/api/articles/:slug/favorite`, ({ params }) => {
         const { slug } = params;
         return HttpResponse.json({
-            article: { id: 1, slug, title: 'Unfavorited Article', favorited: false, favoritesCount: 10 }
+            article: {
+                id: 1,
+                slug,
+                title: 'Unfavorited Article',
+                favorited: false,
+                favoritesCount: 10,
+            },
         });
     }),
 
@@ -221,7 +313,13 @@ export const handlers = [
             return new HttpResponse(null, { status: 401 });
         }
         return HttpResponse.json({
-            user: { id: 1, email: 'test@example.com', username: 'testuser', bio: 'Hello', image: 'avatar.jpg' }
+            user: {
+                id: 1,
+                email: 'test@example.com',
+                username: 'testuser',
+                bio: 'Hello',
+                image: 'avatar.jpg',
+            },
         });
     }),
 
@@ -232,7 +330,7 @@ export const handlers = [
             return new HttpResponse(null, { status: 404 });
         }
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false }
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false },
         });
     }),
 
@@ -240,7 +338,7 @@ export const handlers = [
     http.post(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
         const { username } = params;
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: true }
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: true },
         });
     }),
 
@@ -248,8 +346,7 @@ export const handlers = [
     http.delete(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
         const { username } = params;
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false }
+            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false },
         });
     }),
 ];
-

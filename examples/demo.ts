@@ -37,7 +37,9 @@ async function main() {
             console.log(`      Author: ${article.author?.name || 'Unknown'}`);
             console.log(`      Favorites: ❤️ ${article.favoritesCount}`);
             if (article.mainImage) {
-                console.log(`      Image: ${resolveImageUrl(article.mainImage, sdk.config.cdnUrl)}`);
+                console.log(
+                    `      Image: ${resolveImageUrl(article.mainImage, sdk.config.cdnUrl)}`,
+                );
             }
             console.log();
         });
@@ -97,7 +99,9 @@ async function main() {
                 console.log(`   Engine: ${article.engine?.name || 'N/A'}`);
                 console.log(`   Version: ${article.ver || 'N/A'}`);
                 console.log(`   Tags: ${article.tags?.map((t) => t.name).join(', ') || 'None'}`);
-                console.log(`   Platforms: ${article.platforms?.map((p) => p.name).join(', ') || 'None'}`);
+                console.log(
+                    `   Platforms: ${article.platforms?.map((p) => p.name).join(', ') || 'None'}`,
+                );
                 console.log(`   Created: ${article.createdAt}`);
                 console.log(`   Mods: ${article.mods?.length || 0} mods`);
             }
@@ -130,7 +134,9 @@ async function main() {
                 }
 
                 if (result.article.officialDownloadSources?.length) {
-                    console.log(`   🔗 Official Sources (${result.article.officialDownloadSources.length}):`);
+                    console.log(
+                        `   🔗 Official Sources (${result.article.officialDownloadSources.length}):`,
+                    );
                     result.article.officialDownloadSources.forEach((src) => {
                         console.log(`      - ${src.name}: ${src.url}`);
                     });
@@ -164,7 +170,9 @@ async function main() {
             fields: ['id', 'title', 'favoritesCount', 'engine'],
         });
         customArticles.forEach((a) => {
-            console.log(`      - ${a.title} | ❤️ ${a.favoritesCount} | Engine: ${a.engine?.name || 'N/A'}`);
+            console.log(
+                `      - ${a.title} | ❤️ ${a.favoritesCount} | Engine: ${a.engine?.name || 'N/A'}`,
+            );
         });
     } catch (error) {
         console.error('❌ Error with presets:', error);

@@ -11,7 +11,6 @@ import {
 } from '../errors';
 
 describe('Error Classes', () => {
-
     describe('ChanomhubError', () => {
         it('should create error with message and defaults', () => {
             const error = new ChanomhubError('Test error');

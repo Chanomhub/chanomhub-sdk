@@ -20,7 +20,23 @@ export const DEFAULT_CONFIG: ChanomhubConfig = {
 };
 
 /** Article status enum */
-export type ArticleStatus = 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED' | 'ARCHIVED' | 'NOT_APPROVED' | 'NEEDS_REVISION';
+export type ArticleStatus =
+    | 'DRAFT'
+    | 'PENDING_REVIEW'
+    | 'PUBLISHED'
+    | 'ARCHIVED'
+    | 'NOT_APPROVED'
+    | 'NEEDS_REVISION';
 
 /** Game engine enum */
-export type GameEngine = 'RENPY' | 'RPGM' | 'UNITY' | 'UNREAL' | 'GODOT' | 'TyranoBuilder' | 'WOLFRPG' | 'KIRIKIRI' | 'FLASH' | 'BakinPlayer';
+export type GameEngine =
+    | 'RENPY'
+    | 'RPGM'
+    | 'UNITY'
+    | 'UNREAL'
+    | 'GODOT'
+    | 'TyranoBuilder'
+    | 'WOLFRPG'
+    | 'KIRIKIRI'
+    | 'FLASH'
+    | 'BakinPlayer';

@@ -1,6 +1,6 @@
 /**
  * Image URL Transformation
- * 
+ *
  * Transforms filename-only URLs to full CDN URLs
  */
 
@@ -10,7 +10,10 @@
  * - If it's already a full URL, returns it as-is
  * - Handles null/undefined gracefully
  */
-export function resolveImageUrl(imageUrl: string | null | undefined, cdnUrl: string): string | null {
+export function resolveImageUrl(
+    imageUrl: string | null | undefined,
+    cdnUrl: string,
+): string | null {
     if (!imageUrl) return null;
 
     // Already a full URL - return as-is
@@ -23,12 +26,7 @@ export function resolveImageUrl(imageUrl: string | null | undefined, cdnUrl: str
 }
 
 /** Known image field names */
-const IMAGE_FIELDS = new Set([
-    'mainImage',
-    'backgroundImage',
-    'coverImage',
-    'image',
-]);
+const IMAGE_FIELDS = new Set(['mainImage', 'backgroundImage', 'coverImage', 'image']);
 
 /**
  * Deep transforms all image URLs in an object/array recursively.
@@ -37,7 +35,7 @@ export function transformImageUrlsDeep<T>(data: T, cdnUrl: string): T {
     if (data === null || data === undefined) return data;
 
     if (Array.isArray(data)) {
-        return data.map(item => transformImageUrlsDeep(item, cdnUrl)) as T;
+        return data.map((item) => transformImageUrlsDeep(item, cdnUrl)) as T;
     }
 
     if (typeof data === 'object') {
@@ -50,7 +48,7 @@ export function transformImageUrlsDeep<T>(data: T, cdnUrl: string): T {
             }
             // Transform image objects with url property (e.g., images: [{ url: 'abc.jpg' }])
             else if (key === 'images' && Array.isArray(value)) {
-                result[key] = value.map(img => {
+                result[key] = value.map((img) => {
                     if (img && typeof img === 'object' && 'url' in img) {
                         return { ...img, url: resolveImageUrl(img.url as string, cdnUrl) };
                     }
@@ -60,8 +58,7 @@ export function transformImageUrlsDeep<T>(data: T, cdnUrl: string): T {
             // Recursively transform nested objects
             else if (value !== null && typeof value === 'object') {
                 result[key] = transformImageUrlsDeep(value, cdnUrl);
-            }
-            else {
+            } else {
                 result[key] = value;
             }
         }

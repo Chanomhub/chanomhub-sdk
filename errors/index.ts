@@ -1,6 +1,6 @@
 /**
  * Chanomhub SDK - Error Classes
- * 
+ *
  * Typed errors for better error handling in applications
  */
 

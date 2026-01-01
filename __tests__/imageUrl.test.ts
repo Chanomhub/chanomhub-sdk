@@ -27,7 +27,9 @@ describe('resolveImageUrl', () => {
     });
 
     it('should handle filenames with paths', () => {
-        expect(resolveImageUrl('uploads/abc.jpg', CDN_URL)).toBe('https://cdn.chanomhub.com/uploads/abc.jpg');
+        expect(resolveImageUrl('uploads/abc.jpg', CDN_URL)).toBe(
+            'https://cdn.chanomhub.com/uploads/abc.jpg',
+        );
     });
 });
 
@@ -66,10 +68,7 @@ describe('transformImageUrlsDeep', () => {
 
     it('should transform images array with url property', () => {
         const data = {
-            images: [
-                { url: 'image1.jpg' },
-                { url: 'image2.jpg' },
-            ],
+            images: [{ url: 'image1.jpg' }, { url: 'image2.jpg' }],
         };
 
         const result = transformImageUrlsDeep(data, CDN_URL);
@@ -95,10 +94,7 @@ describe('transformImageUrlsDeep', () => {
     });
 
     it('should handle arrays at root level', () => {
-        const data = [
-            { mainImage: 'img1.jpg' },
-            { mainImage: 'img2.jpg' },
-        ];
+        const data = [{ mainImage: 'img1.jpg' }, { mainImage: 'img2.jpg' }];
 
         const result = transformImageUrlsDeep(data, CDN_URL);
 

@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { createChanomhubClient, createAuthenticatedClient } from '../index';
 
 describe('Repositories Integration Tests', () => {
-
     describe('ArticleRepository', () => {
         it('should get paginated articles', async () => {
             const client = createChanomhubClient();

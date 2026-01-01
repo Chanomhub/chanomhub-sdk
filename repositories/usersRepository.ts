@@ -23,7 +23,6 @@ export interface UsersRepository {
  * Creates a users repository with the given REST client
  */
 export function createUsersRepository(fetcher: RestFetcher): UsersRepository {
-
     async function getCurrentUser(): Promise<User | null> {
         const { data, error } = await fetcher<UserResponse>('/api/user');
 
@@ -37,7 +36,7 @@ export function createUsersRepository(fetcher: RestFetcher): UsersRepository {
 
     async function getProfile(username: string): Promise<Profile | null> {
         const { data, error } = await fetcher<ProfileResponse>(
-            `/api/profiles/${encodeURIComponent(username)}`
+            `/api/profiles/${encodeURIComponent(username)}`,
         );
 
         if (error) {
@@ -51,7 +50,7 @@ export function createUsersRepository(fetcher: RestFetcher): UsersRepository {
     async function follow(username: string): Promise<Profile | null> {
         const { data, error } = await fetcher<ProfileResponse>(
             `/api/profiles/${encodeURIComponent(username)}/follow`,
-            { method: 'POST' }
+            { method: 'POST' },
         );
 
         if (error) {
@@ -65,7 +64,7 @@ export function createUsersRepository(fetcher: RestFetcher): UsersRepository {
     async function unfollow(username: string): Promise<Profile | null> {
         const { data, error } = await fetcher<ProfileResponse>(
             `/api/profiles/${encodeURIComponent(username)}/follow`,
-            { method: 'DELETE' }
+            { method: 'DELETE' },
         );
 
         if (error) {

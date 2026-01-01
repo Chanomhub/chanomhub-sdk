@@ -5,7 +5,6 @@ import { DEFAULT_CONFIG } from '../config';
 const CDN_URL = DEFAULT_CONFIG.cdnUrl;
 
 describe('Chanomhub SDK Integration Tests (MSW)', () => {
-
     it('should fetch and transform articles correctly', async () => {
         const client = createChanomhubClient();
         const articles = await client.articles.getAll();
@@ -48,9 +47,13 @@ describe('Chanomhub SDK Integration Tests (MSW)', () => {
         const client = createChanomhubClient();
 
         // We use the raw graphql client here to target the specific error handler
-        const result = await client.graphql('query ServerErrorQuery { test }', {}, {
-            operationName: 'ServerErrorQuery'
-        });
+        const result = await client.graphql(
+            'query ServerErrorQuery { test }',
+            {},
+            {
+                operationName: 'ServerErrorQuery',
+            },
+        );
 
         expect(result.data).toBeNull();
         // The SDK converts non-ok status to an error message
@@ -60,9 +63,13 @@ describe('Chanomhub SDK Integration Tests (MSW)', () => {
     it('should handle GraphQL errors', async () => {
         const client = createChanomhubClient();
 
-        const result = await client.graphql('query GraphQLErrorQuery { test }', {}, {
-            operationName: 'GraphQLErrorQuery'
-        });
+        const result = await client.graphql(
+            'query GraphQLErrorQuery { test }',
+            {},
+            {
+                operationName: 'GraphQLErrorQuery',
+            },
+        );
 
         expect(result.data).toBeNull();
         expect(result.errors).toHaveLength(1);

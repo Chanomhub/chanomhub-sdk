@@ -1,6 +1,6 @@
 /**
  * Chanomhub SDK - GraphQL Client
- * 
+ *
  * Framework-agnostic GraphQL client using standard fetch API.
  * Works with any JavaScript runtime that supports fetch.
  */
@@ -20,7 +20,7 @@ export interface FetchOptions {
 
 /**
  * Creates a GraphQL fetcher function with automatic image URL transformation
- * 
+ *
  * @param config - SDK configuration
  * @returns GraphQL fetch function
  */
@@ -28,11 +28,11 @@ export function createGraphQLClient(config: ChanomhubConfig) {
     return async function graphqlFetch<T>(
         query: string,
         variables: Record<string, unknown> = {},
-        options: FetchOptions = {}
+        options: FetchOptions = {},
     ): Promise<GraphQLResponse<T>> {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
         };
 
         if (config.token) {
@@ -105,7 +105,7 @@ export interface RestResponse<T> {
 
 /**
  * Creates a REST API client for non-GraphQL endpoints
- * 
+ *
  * @param config - SDK configuration
  * @returns REST fetch function
  */
@@ -115,13 +115,13 @@ export function createRestClient(config: ChanomhubConfig) {
         options: {
             method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
             body?: Record<string, unknown>;
-        } = {}
+        } = {},
     ): Promise<RestResponse<T>> {
         const { method = 'GET', body } = options;
 
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
         };
 
         if (config.token) {

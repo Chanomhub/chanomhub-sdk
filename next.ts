@@ -1,14 +1,14 @@
 /**
  * Chanomhub SDK - Next.js Helpers
- * 
+ *
  * Optional module for Next.js-specific functionality.
  * Import from '@/lib/chanomhub-sdk/next' only in Next.js projects.
- * 
+ *
  * @example
  * ```typescript
  * // In a Next.js Server Component
  * import { createServerClient } from '@/lib/chanomhub-sdk/next';
- * 
+ *
  * const sdk = await createServerClient();
  * const articles = await sdk.articles.getAll();
  * ```
@@ -19,11 +19,13 @@ import { createChanomhubClient, type ChanomhubClient, type ChanomhubConfig } fro
 /**
  * Creates a server-side Chanomhub client for Next.js
  * Automatically reads authentication token from cookies
- * 
+ *
  * @param config - Optional configuration overrides
  * @returns Promise<ChanomhubClient>
  */
-export async function createServerClient(config: Partial<ChanomhubConfig> = {}): Promise<ChanomhubClient> {
+export async function createServerClient(
+    config: Partial<ChanomhubConfig> = {},
+): Promise<ChanomhubClient> {
     // Dynamic import to avoid bundling next/headers in non-Next.js environments
     const { cookies } = await import('next/headers');
     const cookieStore = await cookies();

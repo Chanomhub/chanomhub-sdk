@@ -1,21 +1,21 @@
 /**
  * Chanomhub API SDK
- * 
+ *
  * A framework-agnostic TypeScript SDK for interacting with the Chanomhub API.
  * Works with Next.js, React Native, Node.js, and browser environments.
- * 
+ *
  * @example
  * ```typescript
  * import { createChanomhubClient } from '@/lib/chanomhub-sdk';
- * 
+ *
  * // Basic usage
  * const sdk = createChanomhubClient();
  * const articles = await sdk.articles.getByTag('renpy');
- * 
+ *
  * // With authentication
  * const sdk = createChanomhubClient({ token: 'your-jwt-token' });
  * const article = await sdk.articles.getBySlug('my-article');
- * 
+ *
  * // With custom config
  * const sdk = createChanomhubClient({
  *   apiUrl: 'https://api.chanomhub.online',
@@ -23,7 +23,7 @@
  *   token: 'jwt-token',
  * });
  * ```
- * 
+ *
  * For Next.js server components, use the helper from './next':
  * ```typescript
  * import { createServerClient } from '@/lib/chanomhub-sdk/next';
@@ -32,7 +32,16 @@
  */
 
 import { createGraphQLClient, createRestClient, type GraphQLFetcher } from './client';
-import { createArticleRepository, createFavoritesRepository, createUsersRepository, createSearchRepository, type ArticleRepository, type FavoritesRepository, type UsersRepository, type SearchRepository } from './repositories';
+import {
+    createArticleRepository,
+    createFavoritesRepository,
+    createUsersRepository,
+    createSearchRepository,
+    type ArticleRepository,
+    type FavoritesRepository,
+    type UsersRepository,
+    type SearchRepository,
+} from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
 // Re-export types
@@ -59,22 +68,22 @@ export interface ChanomhubClient {
 
 /**
  * Creates a Chanomhub API client
- * 
+ *
  * This is the main entry point for the SDK. It creates a client that can be
  * used to interact with the Chanomhub API.
- * 
+ *
  * @param config - Configuration options
  * @param config.apiUrl - API base URL (default: https://api.chanomhub.online)
  * @param config.cdnUrl - CDN base URL for images (default: https://cdn.chanomhub.com)
  * @param config.token - JWT authentication token (optional)
  * @param config.defaultCacheSeconds - Default cache duration in seconds (default: 3600)
  * @returns ChanomhubClient with articles repository and raw graphql fetcher
- * 
+ *
  * @example
  * ```typescript
  * // Public access
  * const sdk = createChanomhubClient();
- * 
+ *
  * // With authentication
  * const sdk = createChanomhubClient({ token: 'your-jwt-token' });
  * ```
@@ -105,12 +114,15 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
 /**
  * Creates a client with authentication token
  * Convenience function for authenticated requests
- * 
+ *
  * @param token - JWT authentication token
  * @param config - Optional configuration overrides
  * @returns ChanomhubClient
  */
-export function createAuthenticatedClient(token: string, config: Partial<ChanomhubConfig> = {}): ChanomhubClient {
+export function createAuthenticatedClient(
+    token: string,
+    config: Partial<ChanomhubConfig> = {},
+): ChanomhubClient {
     return createChanomhubClient({
         ...config,
         token,
