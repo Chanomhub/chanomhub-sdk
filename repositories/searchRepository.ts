@@ -3,8 +3,9 @@
  */
 
 import type { GraphQLFetcher } from '../client';
-import type { ArticleListItem } from '../types/article';
+import type { ArticleListItem, ArticlePreset, ArticleField } from '../types/article';
 import type { PaginatedResponse } from '../types/common';
+import { buildFieldsQuery } from '../utils/fields';
 
 /** Search options */
 export interface SearchOptions {
@@ -24,41 +25,16 @@ export interface SearchOptions {
     limit?: number;
     /** Page offset */
     offset?: number;
+    /** Field preset level (default: 'standard') */
+    preset?: ArticlePreset;
+    /** Custom field selection (overrides preset) */
+    fields?: ArticleField[];
 }
 
 export interface SearchRepository {
     /** Search articles by query string */
     articles(query: string, options?: SearchOptions): Promise<PaginatedResponse<ArticleListItem>>;
 }
-
-/**
- * Field query for search results (minimal for performance)
- */
-const SEARCH_FIELDS = `
-    id
-    title
-    slug
-    description
-    ver
-    mainImage
-    coverImage
-    createdAt
-    updatedAt
-    favoritesCount
-    sequentialCode
-    author {
-        name
-        image
-    }
-    tags {
-        id
-        name
-    }
-    engine {
-        id
-        name
-    }
-`;
 
 /**
  * Creates a search repository with the given GraphQL client
@@ -68,7 +44,21 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         query: string,
         options: SearchOptions = {},
     ): Promise<PaginatedResponse<ArticleListItem>> {
-        const { limit = 12, offset = 0, tag, platform, category, engine, sequentialCode, author } = options;
+        const {
+            limit = 12,
+            offset = 0,
+            tag,
+            platform,
+            category,
+            engine,
+            sequentialCode,
+            author,
+            preset = 'standard',
+            fields,
+        } = options;
+
+        // Build field query using shared utility
+        const fieldsQuery = buildFieldsQuery({ preset, fields });
 
         // Build filter parts
         const filterParts: string[] = [];
@@ -84,7 +74,7 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
 
         const graphqlQuery = `query SearchArticles {
             articles(${filterArg}, limit: ${limit}, offset: ${offset}, status: PUBLISHED) {
-                ${SEARCH_FIELDS}
+                ${fieldsQuery}
             }
             articlesCount(${filterArg})
         }`;
