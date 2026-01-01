@@ -12,6 +12,9 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
