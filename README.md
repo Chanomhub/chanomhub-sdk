@@ -1,4 +1,4 @@
-```markdown
+
 # Chanomhub SDK 🚀
 
 **A fully-typed, framework-agnostic TypeScript SDK for interacting with the Chanomhub API**
@@ -314,6 +314,3 @@ The Chanomhub SDK is ready to help you build amazing applications with ease. Whe
 If you find this SDK useful, please consider **starring** the repository to show your support. Your star helps us track the project's popularity and motivates us to continue improving it.
 
 🌟 **[Star on GitHub](https://github.com/Chanomhub/chanomhub-sdk)**
-```
-
-This README.md provides a comprehensive and engaging overview of the Chanomhub SDK, making it easy for developers to understand, install, and start using the library. It includes practical examples, clear instructions, and a roadmap for future development, encouraging contributions and community engagement.
