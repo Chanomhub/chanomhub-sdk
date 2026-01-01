@@ -5,6 +5,25 @@
 import type { ArticleStatus } from '../config';
 import type { Author, Download, OfficialDownloadSource, Mod, NamedEntity, ImageObject } from './common';
 
+/**
+ * Field preset levels for article queries
+ * - minimal: Basic info only (id, title, slug, mainImage) - best for cards/thumbnails
+ * - standard: Common fields for list views (default)
+ * - full: All available fields including body content
+ */
+export type ArticlePreset = 'minimal' | 'standard' | 'full';
+
+/**
+ * Available fields for custom selection
+ */
+export type ArticleField =
+    | 'id' | 'title' | 'slug' | 'description' | 'body' | 'ver'
+    | 'mainImage' | 'coverImage' | 'backgroundImage'
+    | 'author' | 'tags' | 'platforms' | 'categories' | 'creators'
+    | 'engine' | 'images' | 'mods'
+    | 'favoritesCount' | 'favorited'
+    | 'createdAt' | 'updatedAt' | 'status' | 'sequentialCode';
+
 /** Full Article type */
 export interface Article {
     id: number;
@@ -77,6 +96,10 @@ export interface ArticleListOptions {
     offset?: number;
     status?: ArticleStatus;
     filter?: ArticleFilter;
+    /** Field preset level (default: 'standard') */
+    preset?: ArticlePreset;
+    /** Custom field selection (overrides preset) */
+    fields?: ArticleField[];
 }
 
 /** Article with downloads response */

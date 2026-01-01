@@ -3,79 +3,59 @@
  */
 
 import type { GraphQLFetcher, FetchOptions } from '../client';
-import type { Article, ArticleListItem, ArticleListOptions, ArticleWithDownloads } from '../types/article';
+import type { Article, ArticleListItem, ArticleListOptions, ArticleWithDownloads, ArticlePreset, ArticleField } from '../types/article';
 import type { ArticleStatus } from '../config';
 
-// GraphQL Fragments for reuse
-const ARTICLE_LIST_FIELDS = `
-  id
-  title
-  slug
-  description
-  ver
-  createdAt
-  updatedAt
-  mainImage
-  coverImage
-  favoritesCount
-  favorited
-  status
-  sequentialCode
-  engine {
-    id
-    name
-  }
-  author {
-    name
-    image
-  }
-  creators {
-    id
-    name
-  }
-  tags {
-    id
-    name
-  }
-  platforms {
-    id
-    name
-  }
-  categories {
-    id
-    name
-  }
-  images {
-    id
-    url
-  }
-`;
+// ============================================================================
+// Field Presets - Developers can choose the level of detail they need
+// ============================================================================
 
-const ARTICLE_FULL_FIELDS = `
-  id
-  title
-  slug
-  description
-  body
-  ver
-  createdAt
-  updatedAt
-  status
-  engine {
+/**
+ * Field definitions for each preset level
+ */
+const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
+  minimal: ['id', 'title', 'slug', 'mainImage'],
+  standard: [
+    'id', 'title', 'slug', 'description', 'ver',
+    'mainImage', 'coverImage',
+    'author', 'tags', 'platforms', 'categories', 'creators', 'engine',
+    'favoritesCount', 'favorited',
+    'createdAt', 'updatedAt', 'status', 'sequentialCode', 'images'
+  ],
+  full: [
+    'id', 'title', 'slug', 'description', 'body', 'ver',
+    'mainImage', 'coverImage', 'backgroundImage',
+    'author', 'tags', 'platforms', 'categories', 'creators', 'engine',
+    'images', 'mods',
+    'favoritesCount', 'favorited',
+    'createdAt', 'updatedAt', 'status', 'sequentialCode'
+  ],
+};
+
+/**
+ * GraphQL field mappings - converts field names to GraphQL query fragments
+ */
+const FIELD_MAPPINGS: Record<ArticleField, string> = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  body: 'body',
+  ver: 'ver',
+  mainImage: 'mainImage',
+  coverImage: 'coverImage',
+  backgroundImage: 'backgroundImage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status',
+  sequentialCode: 'sequentialCode',
+  favoritesCount: 'favoritesCount',
+  favorited: 'favorited',
+  engine: `engine {
     id
     name
-  }
-  mainImage
-  backgroundImage
-  coverImage
-  favorited
-  favoritesCount
-  sequentialCode
-  images {
-    id
-    url
-  }
-  author {
+  }`,
+  author: `author {
     name
     bio
     image
@@ -85,24 +65,28 @@ const ARTICLE_FULL_FIELDS = `
       platform
       url
     }
-  }
-  creators {
+  }`,
+  creators: `creators {
     id
     name
-  }
-  tags {
+  }`,
+  tags: `tags {
     id
     name
-  }
-  platforms {
+  }`,
+  platforms: `platforms {
     id
     name
-  }
-  categories {
+  }`,
+  categories: `categories {
     id
     name
-  }
-  mods {
+  }`,
+  images: `images {
+    id
+    url
+  }`,
+  mods: `mods {
     id
     name
     description
@@ -118,8 +102,21 @@ const ARTICLE_FULL_FIELDS = `
       id
       url
     }
-  }
-`;
+  }`,
+};
+
+/**
+ * Builds GraphQL fields query from preset or custom fields
+ */
+function buildFieldsQuery(options: { preset?: ArticlePreset; fields?: ArticleField[] } = {}): string {
+  const { preset = 'standard', fields } = options;
+  const selectedFields = fields ?? FIELD_PRESETS[preset];
+
+  return selectedFields
+    .map(field => FIELD_MAPPINGS[field])
+    .filter(Boolean)
+    .join('\n  ');
+}
 
 export interface ArticleRepository {
   /** Get paginated list of articles */
@@ -147,7 +144,7 @@ export interface ArticleRepository {
 export function createArticleRepository(fetcher: GraphQLFetcher): ArticleRepository {
 
   async function getAll(options: ArticleListOptions = {}): Promise<ArticleListItem[]> {
-    const { limit = 12, offset = 0, status = 'PUBLISHED', filter = {} } = options;
+    const { limit = 12, offset = 0, status = 'PUBLISHED', filter = {}, preset, fields } = options;
 
     // Build filter string
     const filterParts: string[] = [];
@@ -158,10 +155,11 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
     if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
 
     const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
+    const fieldsQuery = buildFieldsQuery({ preset, fields });
 
     const query = `query GetArticles {
       articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
-        ${ARTICLE_LIST_FIELDS}
+        ${fieldsQuery}
       }
     }`;
 
@@ -182,7 +180,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
 
     const query = `query GetArticlesByTag($tag: String!) {
       articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}) {
-        ${ARTICLE_LIST_FIELDS}
+        ${buildFieldsQuery()}
       }
     }`;
 
@@ -203,7 +201,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
 
     const query = `query GetArticlesByPlatform($platform: String!) {
       articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}) {
-        ${ARTICLE_LIST_FIELDS}
+        ${buildFieldsQuery()}
       }
     }`;
 
@@ -224,7 +222,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
 
     const query = `query GetArticlesByCategory($category: String!) {
       articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}) {
-        ${ARTICLE_LIST_FIELDS}
+        ${buildFieldsQuery()}
       }
     }`;
 
@@ -243,7 +241,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
   async function getBySlug(slug: string, language?: string): Promise<Article | null> {
     const query = `query GetArticleBySlug($slug: String!, $language: String) {
       article(slug: $slug, language: $language) {
-        ${ARTICLE_FULL_FIELDS}
+        ${buildFieldsQuery({ preset: 'full' })}
       }
     }`;
 
@@ -262,7 +260,7 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
   async function getWithDownloads(slug: string, language?: string): Promise<ArticleWithDownloads> {
     const query = `query GetArticleWithDownloads($slug: String!, $language: String, $downloadsArticleId: Int) {
       article(slug: $slug, language: $language) {
-        ${ARTICLE_FULL_FIELDS}
+        ${buildFieldsQuery({ preset: 'full' })}
       }
       downloads(articleId: $downloadsArticleId) {
         id
