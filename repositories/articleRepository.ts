@@ -56,6 +56,9 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
         if (filter.category) filterParts.push(`category: "${filter.category}"`);
         if (filter.author) filterParts.push(`author: "${filter.author}"`);
         if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
+        if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
+        if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);
+        if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const fieldsQuery = buildFieldsQuery({ preset, fields });
@@ -101,6 +104,9 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
         if (filter.category) filterParts.push(`category: "${filter.category}"`);
         if (filter.author) filterParts.push(`author: "${filter.author}"`);
         if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
+        if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
+        if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);
+        if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const countFilterArg =

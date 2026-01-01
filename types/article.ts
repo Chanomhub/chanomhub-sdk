@@ -112,6 +112,12 @@ export interface ArticleFilter {
     category?: string;
     author?: string;
     favorited?: boolean;
+    /** Filter by engine (e.g., 'RenPy', 'Unity') */
+    engine?: string;
+    /** Filter by sequential code (e.g., 'HJ218') */
+    sequentialCode?: string;
+    /** Full-text search query */
+    q?: string;
 }
 
 /** Article list options */
