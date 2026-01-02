@@ -139,6 +139,76 @@ export default async function Page() {
 }
 ```
 
+### OAuth Authentication (Supabase)
+
+The SDK supports OAuth authentication via Supabase. First, install the Supabase client:
+
+```bash
+npm install @supabase/supabase-js
+```
+
+Configure the SDK with your Supabase credentials:
+
+```typescript
+import { createChanomhubClient } from '@chanomhub/sdk';
+
+const sdk = createChanomhubClient({
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+});
+
+// Check if OAuth is available
+if (sdk.auth.isOAuthEnabled()) {
+  // Start Google sign-in (redirects to Google)
+  await sdk.auth.signInWithGoogle({
+    redirectTo: 'http://localhost:3000/login/callback',
+  });
+}
+```
+
+Handle the OAuth callback:
+
+```typescript
+// app/login/callback/page.tsx
+import { createChanomhubClient } from '@chanomhub/sdk';
+import Cookies from 'js-cookie';
+
+export default async function CallbackPage() {
+  const sdk = createChanomhubClient({
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  });
+
+  // Exchange Supabase token for backend JWT
+  const result = await sdk.auth.handleCallback();
+
+  if (result) {
+    // Store tokens (you manage storage)
+    Cookies.set('token', result.token, { secure: true, sameSite: 'strict' });
+    Cookies.set('refreshToken', result.refreshToken);
+    // Redirect to home or dashboard
+  }
+}
+```
+
+Available OAuth methods:
+
+```typescript
+// Sign in with specific provider
+await sdk.auth.signInWithProvider('google');
+await sdk.auth.signInWithProvider('discord');
+await sdk.auth.signInWithProvider('github');
+
+// Refresh backend token
+const newTokens = await sdk.auth.refreshToken(refreshToken);
+
+// Sign out (clears Supabase session)
+await sdk.auth.signOut();
+
+// Get current Supabase session
+const session = await sdk.auth.getSupabaseSession();
+```
+
 ---
 
 ## 📁 Project Structure
