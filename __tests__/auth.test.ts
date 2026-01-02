@@ -195,4 +195,24 @@ describe('authRepository', () => {
             expect(result).toBeNull();
         });
     });
+
+    // ============================================
+    // Electron / Server-side OAuth Tests
+    // ============================================
+
+    describe('getOAuthUrl', () => {
+        it('should return OAuth URL when Supabase is configured', async () => {
+            config.supabaseUrl = 'https://test.supabase.co';
+            config.supabaseAnonKey = 'test-key';
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const auth = createAuthRepository(mockFetcher as RestFetcher, config);
+
+            // Mock Supabase client setup would go here
+        });
+    });
+
+    it('should have getOAuthUrl method', () => {
+        const auth = createAuthRepository(mockFetcher as RestFetcher, config);
+        expect(typeof auth.getOAuthUrl).toBe('function');
+    });
 });

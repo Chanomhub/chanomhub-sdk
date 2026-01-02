@@ -265,6 +265,31 @@ const oauthResult = await authorize(myConfig);
 const loginResult = await sdk.auth.exchangeOAuthToken(oauthResult);
 ```
 
+### Electron / Server-side OAuth
+
+For environments where you need to handle the OAuth redirect manually (e.g., Electron, CLI):
+
+```typescript
+// 1. Get the OAuth URL
+const options = {
+  skipBrowserRedirect: true,
+  redirectTo: 'myapp://oauth-callback',
+  scopes: 'email profile', // Optional
+};
+
+const { url } = await sdk.auth.signInWithGoogle(options);
+// OR generic provider:
+// const { url } = await sdk.auth.signInWithProvider('github', options);
+
+if (url) {
+  // 2. Open URL in external browser/window (Electron example)
+  // shell.openExternal(url);
+}
+
+// 3. In your app's deep link handler, process the returned code/token
+// This depends on how you handle deep links in Electron
+```
+
 ---
 
 ## 📁 Project Structure

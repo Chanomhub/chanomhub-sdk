@@ -13,6 +13,10 @@ export interface OAuthOptions {
     redirectTo?: string;
     /** Additional scopes to request */
     scopes?: string;
+    /** Skip automatic browser redirect (useful for Electron/Server-side) */
+    skipBrowserRedirect?: boolean;
+    /** Additional query parameters for the OAuth URL */
+    queryParams?: { [key: string]: string };
 }
 
 /** Login response from backend after token exchange */

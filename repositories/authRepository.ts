@@ -22,8 +22,13 @@ type SupabaseClient = {
     auth: {
         signInWithOAuth: (options: {
             provider: OAuthProvider;
-            options?: { redirectTo?: string; scopes?: string };
-        }) => Promise<{ data: unknown; error: Error | null }>;
+            options?: {
+                redirectTo?: string;
+                scopes?: string;
+                queryParams?: { [key: string]: string };
+                skipBrowserRedirect?: boolean;
+            };
+        }) => Promise<{ data: { url: string | null }; error: Error | null }>;
         signOut: () => Promise<{ error: Error | null }>;
         getSession: () => Promise<{
             data: { session: SupabaseSession | null };
@@ -37,10 +42,21 @@ export interface AuthRepository {
     isOAuthEnabled(): boolean;
 
     /** Sign in with Google OAuth - redirects to Google login page (Web only) */
-    signInWithGoogle(options?: OAuthOptions): Promise<void>;
+    signInWithGoogle(options?: OAuthOptions): Promise<{ url: string | null }>;
 
-    /** Sign in with any supported OAuth provider (Web only) */
-    signInWithProvider(provider: OAuthProvider, options?: OAuthOptions): Promise<void>;
+    /** Sign in with any supported OAuth provider */
+    signInWithProvider(
+        provider: OAuthProvider,
+        options?: OAuthOptions,
+    ): Promise<{ url: string | null }>;
+
+    /**
+     * Get the OAuth URL for manual redirect handling (Electron, etc.)
+     * @param provider - OAuth provider
+     * @param options - OAuth options
+     * @returns OAuth URL string
+     */
+    getOAuthUrl(provider: OAuthProvider, options?: OAuthOptions): Promise<string | null>;
 
     /**
      * Sign in with Google OAuth for React Native apps.
@@ -135,10 +151,40 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
         return Boolean(config.supabaseUrl && config.supabaseAnonKey);
     }
 
+    async function getOAuthUrl(
+        provider: OAuthProvider,
+        options: OAuthOptions = {},
+    ): Promise<string | null> {
+        const client = await getSupabaseClient();
+
+        if (!client) {
+            throw new Error(
+                'Supabase is not configured. Please provide supabaseUrl and supabaseAnonKey in config.',
+            );
+        }
+
+        const { data, error } = await client.auth.signInWithOAuth({
+            provider,
+            options: {
+                redirectTo: options.redirectTo,
+                scopes: options.scopes,
+                queryParams: options.queryParams,
+                skipBrowserRedirect: true,
+            },
+        });
+
+        if (error) {
+            console.error(`Get OAuth URL error (${provider}):`, error.message);
+            throw error;
+        }
+
+        return data.url || null;
+    }
+
     async function signInWithProvider(
         provider: OAuthProvider,
         options: OAuthOptions = {},
-    ): Promise<void> {
+    ): Promise<{ url: string | null }> {
         const client = await getSupabaseClient();
 
         if (!client) {
@@ -148,11 +194,13 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
             );
         }
 
-        const { error } = await client.auth.signInWithOAuth({
+        const { data, error } = await client.auth.signInWithOAuth({
             provider,
             options: {
                 redirectTo: options.redirectTo,
                 scopes: options.scopes,
+                queryParams: options.queryParams,
+                skipBrowserRedirect: options.skipBrowserRedirect,
             },
         });
 
@@ -161,10 +209,15 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
             throw error;
         }
 
-        // Browser will redirect to OAuth provider
+        // If skipBrowserRedirect is true, return the URL
+        if (options.skipBrowserRedirect && data.url) {
+            return { url: data.url };
+        }
+
+        return { url: null };
     }
 
-    async function signInWithGoogle(options: OAuthOptions = {}): Promise<void> {
+    async function signInWithGoogle(options: OAuthOptions = {}): Promise<{ url: string | null }> {
         return signInWithProvider('google', options);
     }
 
@@ -401,6 +454,7 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
         isOAuthEnabled,
         signInWithGoogle,
         signInWithProvider,
+        getOAuthUrl,
         signInWithGoogleNative,
         signInWithProviderNative,
         exchangeOAuthToken,
