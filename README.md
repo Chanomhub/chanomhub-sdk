@@ -209,6 +209,62 @@ await sdk.auth.signOut();
 const session = await sdk.auth.getSupabaseSession();
 ```
 
+### OAuth for React Native (Pure RN / Without Expo)
+
+For React Native apps, install `react-native-app-auth`:
+
+```bash
+npm install @chanomhub/sdk react-native-app-auth
+```
+
+Configure and use native OAuth:
+
+```typescript
+import { createChanomhubClient } from '@chanomhub/sdk';
+
+const sdk = createChanomhubClient();
+
+// Google Sign-In for React Native
+const result = await sdk.auth.signInWithGoogleNative({
+  googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  googleIosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com', // Optional
+  redirectUri: 'com.yourapp://oauth',
+});
+
+if (result) {
+  // result contains: { user, token, refreshToken }
+  console.log('Logged in as:', result.user.username);
+}
+```
+
+Other providers:
+
+```typescript
+// Discord
+await sdk.auth.signInWithProviderNative('discord', {
+  discordClientId: 'YOUR_DISCORD_CLIENT_ID',
+  redirectUri: 'com.yourapp://oauth',
+});
+
+// GitHub
+await sdk.auth.signInWithProviderNative('github', {
+  githubClientId: 'YOUR_GITHUB_CLIENT_ID',
+  redirectUri: 'com.yourapp://oauth',
+});
+```
+
+If you handle OAuth flow yourself:
+
+```typescript
+import { authorize } from 'react-native-app-auth';
+
+// Use your own OAuth config
+const oauthResult = await authorize(myConfig);
+
+// Exchange with backend
+const loginResult = await sdk.auth.exchangeOAuthToken(oauthResult);
+```
+
 ---
 
 ## 📁 Project Structure

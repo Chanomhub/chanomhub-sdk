@@ -53,19 +53,24 @@
     "msw": "^2.12.7",
     "next": "^16.1.1",
     "prettier": "^3.7.4",
+    "react-native-app-auth": "^8.1.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.51.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@supabase/supabase-js": ">=2.0.0",
-    "next": ">=13.0.0"
+    "next": ">=13.0.0",
+    "react-native-app-auth": ">=7.0.0"
   },
   "peerDependenciesMeta": {
     "next": {
       "optional": true
     },
     "@supabase/supabase-js": {
+      "optional": true
+    },
+    "react-native-app-auth": {
       "optional": true
     }
   }

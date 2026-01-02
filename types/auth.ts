@@ -56,3 +56,47 @@ export interface LoginSupabaseRequest {
 export interface RefreshTokenRequest {
     refreshToken: string;
 }
+
+// ============================================
+// React Native OAuth Types
+// ============================================
+
+/** Native OAuth provider configuration for React Native */
+export interface NativeOAuthConfig {
+    /** Google OAuth client ID (for Android/iOS) */
+    googleClientId?: string;
+    /** Google iOS client ID (optional, for iOS-specific config) */
+    googleIosClientId?: string;
+    /** Discord OAuth client ID */
+    discordClientId?: string;
+    /** GitHub OAuth client ID */
+    githubClientId?: string;
+    /** Custom redirect URI (e.g., com.yourapp://oauth) */
+    redirectUri: string;
+    /** Additional scopes to request */
+    scopes?: string[];
+}
+
+/** Native OAuth authorization result from react-native-app-auth */
+export interface NativeOAuthResult {
+    /** Access token from OAuth provider */
+    accessToken: string;
+    /** ID token (for OpenID Connect providers like Google) */
+    idToken?: string;
+    /** Refresh token */
+    refreshToken?: string;
+    /** Token expiration date */
+    accessTokenExpirationDate?: string;
+    /** Token type (usually 'Bearer') */
+    tokenType?: string;
+    /** Scopes granted */
+    scopes?: string[];
+}
+
+/** Options for native OAuth sign-in */
+export interface NativeOAuthOptions {
+    /** Additional scopes to request */
+    scopes?: string[];
+    /** Use PKCE (recommended, default: true) */
+    usePKCE?: boolean;
+}
