@@ -375,7 +375,8 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
         }
 
         // Try to dynamically import react-native-app-auth
-        let authorize: (config: Record<string, unknown>) => Promise<NativeOAuthResult>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let authorize: (config: any) => Promise<NativeOAuthResult>;
         try {
             const appAuth = await import('react-native-app-auth');
             authorize = appAuth.authorize;
