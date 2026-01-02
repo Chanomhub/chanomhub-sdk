@@ -42,6 +42,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "@types/node": "^25.0.3",
     "@typescript-eslint/eslint-plugin": "^8.51.0",
     "@typescript-eslint/parser": "^8.51.0",
@@ -49,14 +50,23 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "msw": "^2.12.4",
-    "next": "^16.1.0",
+    "msw": "^2.12.7",
+    "next": "^16.1.1",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.51.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
+    "@supabase/supabase-js": ">=2.0.0",
     "next": ">=13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    },
+    "@supabase/supabase-js": {
+      "optional": true
+    }
   }
 }

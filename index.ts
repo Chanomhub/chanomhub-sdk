@@ -37,10 +37,12 @@ import {
     createFavoritesRepository,
     createUsersRepository,
     createSearchRepository,
+    createAuthRepository,
     type ArticleRepository,
     type FavoritesRepository,
     type UsersRepository,
     type SearchRepository,
+    type AuthRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
@@ -60,6 +62,8 @@ export interface ChanomhubClient {
     users: UsersRepository;
     /** Search operations */
     search: SearchRepository;
+    /** Authentication operations (requires Supabase config for OAuth) */
+    auth: AuthRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -100,12 +104,14 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const favorites = createFavoritesRepository(rest);
     const users = createUsersRepository(rest);
     const search = createSearchRepository(graphql);
+    const auth = createAuthRepository(rest, fullConfig);
 
     return {
         articles,
         favorites,
         users,
         search,
+        auth,
         graphql,
         config: fullConfig,
     };

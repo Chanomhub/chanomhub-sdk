@@ -11,6 +11,10 @@ export interface ChanomhubConfig {
     token?: string;
     /** Default cache duration in seconds (0 = no cache) */
     defaultCacheSeconds?: number;
+    /** Supabase project URL (required for OAuth) */
+    supabaseUrl?: string;
+    /** Supabase anon key (required for OAuth) */
+    supabaseAnonKey?: string;
 }
 
 export const DEFAULT_CONFIG: ChanomhubConfig = {
