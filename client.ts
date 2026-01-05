@@ -50,13 +50,17 @@ export function createGraphQLClient(config: ChanomhubConfig) {
             }),
         };
 
-        // Handle caching - use standard Cache-Control header approach
-        // Note: Next.js and some other frameworks may extend RequestInit with 'next' property
-        // We use a type-safe approach that works everywhere
+        // Handle caching - use Next.js revalidate option for ISR support
         const useCache = !options.noCache && !config.token;
         const cacheSeconds = options.cacheSeconds ?? config.defaultCacheSeconds ?? 3600;
 
-        if (!useCache || cacheSeconds === 0) {
+        if (useCache && cacheSeconds > 0) {
+            // Use Next.js ISR caching with revalidate option
+            (fetchOptions as RequestInit & { next?: { revalidate: number } }).next = {
+                revalidate: cacheSeconds,
+            };
+        } else {
+            // Disable caching entirely
             fetchOptions.cache = 'no-store';
         }
 
