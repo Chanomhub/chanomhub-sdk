@@ -57,6 +57,8 @@ export interface UploadOptions {
      * Example: 'elden-ring'
      */
     game?: string;
+    /** File size in bytes (for pre-validation in storage service) */
+    fileSize?: number;
     /** Progress callback (browser only) */
     onProgress?: (percent: number) => void;
     /** Chunk size for multipart upload (default 5MB) */
@@ -210,7 +212,7 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         options: UploadOptions = {}
     ): Promise<InitiateMultipartResponse> {
         requireAuth();
-        const { bucket = 'storage', path, game } = options;
+        const { bucket = 'storage', path, game, fileSize } = options;
         const storageUrl = config.storageServiceUrl || 'https://oi.chanomhub.com';
 
         const url = new URL(`${storageUrl}/upload/initiate`);
@@ -219,6 +221,7 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         if (bucket) url.searchParams.append('bucket', bucket);
         if (path) url.searchParams.append('path', path);
         if (game) url.searchParams.append('game', game);
+        if (fileSize) url.searchParams.append('fileSize', fileSize.toString());
 
         const response = await fetch(url.toString(), {
             method: 'POST',
@@ -351,7 +354,10 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         const contentType = file.type || 'application/octet-stream';
         
         // 1. Initiate
-        const initiateData = await initiateMultipartUpload(filename, contentType, options);
+        const initiateData = await initiateMultipartUpload(filename, contentType, {
+            ...options,
+            fileSize: file.size,
+        });
         
         try {
             const totalChunks = Math.ceil(file.size / chunkSize);

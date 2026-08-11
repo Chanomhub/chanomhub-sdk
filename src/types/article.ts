@@ -33,6 +33,7 @@ export type ArticleField =
     | 'mainImage'
     | 'coverImage'
     | 'backgroundImage'
+    | 'videoUrl'
     | 'author'
     | 'tags'
     | 'platforms'
@@ -77,6 +78,7 @@ export interface Article {
     mainImage: string | null;
     backgroundImage: string | null;
     coverImage: string | null;
+    videoUrl?: string | null;
     images: ImageObject[];
     author: Author;
     favorited: boolean;
@@ -106,6 +108,7 @@ export interface ArticleListItem {
     updatedAt: string;
     mainImage: string | null;
     coverImage?: string | null;
+    videoUrl?: string | null;
     favoritesCount: number;
     favorited?: boolean;
     status?: ArticleStatus;
@@ -174,6 +177,7 @@ export interface NewArticleDTO {
     mainImage?: string | null;
     backgroundImage?: string | null;
     coverImage?: string | null;
+    videoUrl?: string | null;
     otherImages?: string[];
     tags?: string[];
     categories?: string[];
@@ -197,6 +201,7 @@ export interface UpdateArticleDTO {
     mainImage?: string | null;
     backgroundImage?: string | null;
     coverImage?: string | null;
+    videoUrl?: string | null;
     otherImages?: string[];
     tags?: string[];
     categories?: string[];
